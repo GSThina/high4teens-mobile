@@ -1,0 +1,31 @@
+ion-content ion-toolbar {
+  --background: translucent;
+}
+
+ion-slides{
+  --bullet-background-active: #dd2a27;
+  --bullet-background: #f1aaa9;
+}
+
+ion-img{
+	width: 100%;
+}
+
+.half-card > ion-img {
+	width: 100%;
+	max-height: 10em;
+    overflow: hidden;
+    display: block;
+}
+
+.center{
+	text-align: center;
+}
+
+.activity-item{
+  // border-bottom: 1px solid #dd2a27;
+}
+
+ion-title{
+  --color: #dd2a27;
+}

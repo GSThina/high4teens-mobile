@@ -1,0 +1,131 @@
+<ion-content slot="fixed">
+<!-- <ion-slides> -->
+  <!-- <ion-slide> -->
+    <ion-item mode="ios" class="announcement" lines="none">
+      <ion-note class="brandRed">{{announcement}}</ion-note>
+    </ion-item>
+
+    <!-- Login Below -->
+
+    <ion-card class="middle" *ngIf="!isShowSignupCard&&!isShowForgotPassword&&!isResetPassword">
+      <ion-card-header translucent="true">
+        <h1>Login</h1>
+        <ion-item lines="none" class="loginItems">
+          <ion-icon class="icons" name="person-outline"></ion-icon>
+          <ion-input (ionInput)='checkIdentityType()' [(ngModel)]='loginDetails.identity' align="left" placeholder="Username, Phone or Email"></ion-input>
+          <ion-button *ngIf="isIdentityExists" size="small" fill="clear" color="success" slot="end">
+            <ion-icon slot="icon-only" name="checkmark-circle-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+        <ion-item lines="none" class="loginItems">
+          <ion-icon class="icons" name="lock-closed-outline"></ion-icon>
+          <ion-input [(ngModel)]='loginDetails.password' type='password' align="left" placeholder="Password"></ion-input>
+          <ion-button (click)='user.login(loginDetails)' [disabled]="loginDetails.password.length<6" size="small" fill="clear" class="brandRed" slot="end">
+            <ion-icon slot="icon-only" name="arrow-forward-circle-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item lines="none">
+          <ion-note><b class="brandRed" (click)='forgotPassword()'>Forgot Password?</b></ion-note>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="middle" *ngIf="isShowForgotPassword&&!isResetPassword">
+      <ion-card-header translucent="true">
+        <h1>It's Ok, Chill!</h1>
+        <ion-item lines="none" class="loginItems">
+          <ion-icon class="icons" [name]="(loginDetails.type=='phone')?'call-outline':((loginDetails.type=='email')?'mail-outline':'person-outline')"></ion-icon>
+          <ion-input [disabled]="isShowEnterOTP" (ionInput)='checkIdentityType()' [(ngModel)]='loginDetails.identity' align="left" placeholder="Enter Phone or Email"></ion-input>
+          <ion-button (click)='resetPasswordAction()' [disabled]="loginDetails.identity.length<=6||isShowEnterOTP" size="small" fill="clear" class="brandRed" slot="end">
+            <ion-icon slot="icon-only" name="arrow-forward-circle-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+        <ion-item lines="none" class="loginItems" *ngIf="isShowEnterOTP">
+          <ion-icon class="icons" name="lock-closed-outline"></ion-icon>
+          <ion-input (ionInput)='checkIdentityType()' [(ngModel)]='otp' align="left" placeholder="Enter OTP"></ion-input>
+          <ion-button (click)='verifyOtp(otp)' size="small" fill="clear" class="brandRed" slot="end">
+            <ion-icon slot="icon-only" name="arrow-forward-circle-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-card-header>
+      <div *ngIf="!isShowEnterOTP" id="recaptcha-container"></div>
+      <ion-card-content>
+        <ion-item lines="none">
+          <ion-note *ngIf="!isShowForgotPassword"><b class="brandRed" (click)='forgotPassword()'>Forgot Password?</b></ion-note>
+          <ion-note *ngIf="isShowForgotPassword"><b class="brandRed" (click)='backToLogin()'>back to login?</b></ion-note>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="middle" *ngIf="isResetPassword">
+      <ion-card-header translucent="true">
+        <h1>Reset Password</h1>
+        <ion-item lines="none" class="loginItems">
+          <ion-icon class="icons" name="lock-closed-outline"></ion-icon>
+          <ion-input [(ngModel)]='newPassword' align="left" placeholder="Enter New Password"></ion-input>
+        </ion-item>
+        <ion-item lines="none" class="loginItems" *ngIf="isShowEnterOTP">
+          <ion-icon class="icons" name="lock-closed"></ion-icon>
+          <ion-input [(ngModel)]='confirmPassword' align="left" placeholder="Confirm New Password"></ion-input>
+          <ion-button [disabled]="newPassword!=confirmPassword" (click)='confirmResetPassword(confirmPassword)' size="small" fill="clear" class="brandRed" slot="end">
+            <ion-icon slot="icon-only" name="arrow-forward-circle-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-card-header>
+    </ion-card>
+
+    <!-- Sign up below -->
+
+    <ion-card class="middle" *ngIf="isShowSignupCard">
+      <ion-card-header translucent="true">
+        <ion-item lines="none">
+          <ion-input (ionInput)="checkIfExists(signupDetails.full_name, 'full_name')" [(ngModel)]='signupDetails.full_name' align="left" placeholder="Full Name" required></ion-input>
+        </ion-item>
+        <!-- <ion-item lines="none">
+          <ion-input (ionInput)="checkIfExists(signupDetails.email, 'email')" [(ngModel)]='signupDetails.email' align="left" placeholder="Email"></ion-input>
+          <ion-button *ngIf="isEmailExists" size="small" fill="clear" color="success" slot="end">
+            <ion-icon slot="icon-only" name="checkmark-circle-outline"></ion-icon>
+          </ion-button>
+        </ion-item> -->
+        <ion-item lines="none">
+          <ion-input (ionInput)="checkIfExists(signupDetails.phone, 'phone')" [(ngModel)]='signupDetails.identity' align="left" placeholder="Phone or Email" required></ion-input>
+          <ion-button *ngIf="isPhoneExists" size="small" fill="clear" color="success" slot="end">
+            <ion-icon slot="icon-only" name="checkmark-circle-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+        <ion-item lines="none">
+          <ion-input (ionInput)="checkIfExists(signupDetails.username, 'username')" [(ngModel)]='signupDetails.username' align="left" placeholder="Username" required></ion-input>
+          <ion-button *ngIf="isUsernameExists" size="small" fill="clear" color="success" slot="end">
+            <ion-icon slot="icon-only" name="checkmark-circle-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+        <ion-item lines="none">
+          <ion-input [(ngModel)]='signupDetails.password' type='password' align="left" placeholder="Password"></ion-input>
+          <ion-button (click)='signup()' [disabled]="signupDetails.password.length<=6" size="small" fill="clear" class="brandRed" slot="end">
+            <ion-icon slot="icon-only" name="arrow-forward-circle-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item lines="none">
+          <ion-note>By signing up, you agree to our <b class="brandRed" (click)='openLink()'>Terms</b>, <b class="brandRed" (click)='openLink()'>Data Policy</b> and <b class="brandRed" (click)='openLink()'>Cookies Policy</b>.</ion-note>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+  <!-- </ion-slide> -->
+<!-- </ion-slides> -->
+
+</ion-content>
+<ion-footer>
+  <ion-item mode="ios" lines="none">
+    <ion-note>Already a part of our Community? Awesome, <b class="brandRed" (click)='signupCardToggle()'>{{alternateActionText}}</b> now!</ion-note>
+  </ion-item>
+</ion-footer>
+<!-- <script>
+  $('.loginItems').on('click', function(e){
+      e.preventDefault();
+      $(this).toggleClass('toggleColor');
+    });
+</script> -->

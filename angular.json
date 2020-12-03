@@ -39,7 +39,19 @@
                 "input": "src/global.scss"
               }
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "hammerjs",
+              "debug",
+              "socket.io-client",
+              "socket.io-parser",
+              "@firebase/firestore",
+              "@firebase/app",
+              "@firebase/util",
+              "@firebase/component",
+              "firebase/app",
+              "chart.js"
+            ]
           },
           "configurations": {
             "production": {

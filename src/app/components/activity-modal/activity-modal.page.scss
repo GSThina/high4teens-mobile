@@ -1,0 +1,101 @@
+.featured-img{
+	object-fit: cover;
+	opacity: 0.9;
+}
+
+/*ion-card-header{
+	position: absolute;
+	margin-top: -5em;
+	z-index: 5;
+}*/
+
+ion-content{
+	// --background: #dd2a27;
+	--background: #F0F0F0;
+}
+
+// ion-card{
+// 	// padding: 0;
+// }
+
+ion-header {
+    max-height: 15em;
+    overflow: hidden;
+    /*background: black;*/
+    background: black;  /* fallback colour. Make sure this is just one solid colour. */
+    /*background: -webkit-linear-gradient(rgba(29, 38, 113, 0.8), rgba(195, 55, 100, 0.8)), url();*/
+    /*background: linear-gradient(rgba(29, 38, 113, 0.8), rgba(195, 55, 100, 0.8)), url(); /* The least supported option. */
+
+
+}
+
+.baseLineCard{
+	// margin-top: -1em;
+	border-radius: 5em 25em 25em 5em;
+}
+
+.myLineCard{
+	color: #fff;
+	background-color: #D75B5B;
+	// width: 80%;
+}
+
+ion-card-content{
+	font-size: 1em;
+}
+
+ion-chip ion-label{
+	font-size: 0.7em;
+}
+
+ion-chip ion-avatar{
+	width: 1em;
+	height: 1em;
+}
+
+.fullWidth{
+	width: 100%;
+}
+
+.fullHeight{
+	height: 100%;
+}
+
+ion-footer{
+	z-index: 1;
+}
+
+ion-header ion-icon {
+	position: absolute;
+	font-size: 1.2em;
+	margin: 0.5em;
+}
+
+.metrics ion-icon{
+	font-size: 1.3em;
+	padding: 2px;
+	align-items: center;
+}
+
+.metrics ion-note{
+	padding: 0 0 2px 0;
+
+}
+
+p {
+	font-size: 1.2em;
+}
+
+.inputField{
+	height: inherit;
+}
+
+.scrollToBottomIcon{
+	--background: none;
+}
+
+.scrollToBottomIcon ion-icon{
+	font-size: 0.75em;
+	text-align: center;
+
+}

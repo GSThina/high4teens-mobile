@@ -1,5 +1,7 @@
 {
-  "name": "high4teens-mobile",
-  "integrations": {},
+  "name": "HighCom",
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

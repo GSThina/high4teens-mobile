@@ -1,0 +1,42 @@
+// .editor-title{
+// 	font-size: 1.5em;
+// }
+//
+// .editor-subtitle{
+// 	font-size: 1.2em;
+// 	color: grey;
+// }
+//
+// .editor-body{
+// 	font-size: 1em;
+// }
+//
+// /*
+// ion-content {
+//     --overflow: hidden;
+// }*/
+
+html {
+  height: 100%;
+}
+body {
+  margin: 0;
+  height: 100%;
+}
+
+/* Tell Quill not to scroll */
+#editor {
+  height: auto;
+  min-height: 100%;
+  font-size: 16px;
+  overflow-y: visible;
+  font-family: 'Merriweather';
+}
+
+/* Specify our own scrolling container */
+#scrolling-container {
+	padding: 5px;
+  height: 100%;
+  min-height: 100%;
+  overflow-y: auto;
+}

@@ -1,0 +1,44 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons>
+      <ion-button slot="icon-only" (click)="dismiss()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{data.text}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <!-- <ion-item lines="none">
+      {{data.text}}
+    </ion-item> -->
+    <div *ngIf="data.matches">
+      <ion-row *ngFor="let i = index; let match of data.matches">
+
+        <ion-col size='12'>
+          <ion-item lines="none" text-wrap>
+            <ion-note><b>{{match.message}}</b> in <i>"{{match.context.text}}"</i></ion-note>
+          </ion-item>
+          <!-- <ion-item lines="none" text-wrap>
+            <ion-label>{{match.context.text}}</ion-label>
+          </ion-item> -->
+        </ion-col>
+
+        <ion-col size='12'>
+          <ion-item lines="none" text-wrap>
+            <ion-label>{{match.context.text.substr(match.context.offset, match.context.length)}}</ion-label>
+          </ion-item>
+        </ion-col>
+
+        <ion-col size='12'>
+          <ion-item lines="none" text-wrap>
+            <ion-chip *ngFor='let j = index; let replacement of match.replacements;' [ngClass]="replacement.isSelected?'active':'inactive'" (click)="replaceMatch(match.context, replacement, i, j)">{{replacement.value}}</ion-chip>
+            <!-- <ion-chip><ion-icon name='close'></ion-icon></ion-chip> -->
+          </ion-item>
+        </ion-col>
+
+      </ion-row>
+    </div>
+  </ion-list>
+</ion-content>

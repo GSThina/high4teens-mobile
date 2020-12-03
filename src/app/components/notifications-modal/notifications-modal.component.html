@@ -1,0 +1,53 @@
+<ion-list>
+
+  <ion-item lines="none" *ngFor="let item of pushService.notificationList">
+    <ion-avatar slot="start">
+      <img [src]="item.icon">
+    </ion-avatar>
+    <ion-label>{{item.message}}</ion-label>
+  </ion-item>
+
+</ion-list>
+
+<!-- <ion-list>
+
+  <ion-item>
+
+    <ion-label>
+      Have you missed?
+    </ion-label>
+    <ion-icon name="information-circle-outline"></ion-icon>
+  </ion-item>
+
+  <ion-item lines="none">
+    <ion-label>
+      No Lines Item
+    </ion-label>
+  </ion-item>
+
+  <ion-item>
+    <ion-label class="ion-text-wrap">
+    Multiline text that should wrap when it is too long
+    to fit on one line in the item.
+    </ion-label>
+  </ion-item>
+
+  <ion-item>
+    <ion-label class="ion-text-wrap">
+      <ion-text color="primary">
+        <h3>H3 Primary Title</h3>
+      </ion-text>
+      <p>Paragraph line 1</p>
+      <ion-text color="secondary">
+        <p>Paragraph line 2 secondary</p>
+      </ion-text>
+    </ion-label>
+  </ion-item>
+
+  <ion-item button (click)="viewAllNotifications()" detail>
+    <ion-label>
+      View All
+    </ion-label>
+  </ion-item>
+
+</ion-list> -->

@@ -10,6 +10,8 @@ export class ExploreContainerComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() {
+  	this.name = "Invite your friend"
+  }
 
 }

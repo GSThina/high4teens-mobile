@@ -1,0 +1,205 @@
+<ion-header  *ngIf="!options.isQuill" [ngClass]="editorService.editor.color" class="ion-no-border" [translucent]="true">
+	  <ion-toolbar color="palette">
+			<ion-row>
+		    <ion-buttons>
+		      <ion-button slot="icon-only" (click)="dismiss()">
+		        <ion-icon name="arrow-back-outline"></ion-icon>
+		      </ion-button>
+		    </ion-buttons>
+
+				<!-- <ion-title>Select text to format</ion-title> -->
+
+		    <ion-buttons slot="primary">
+		      <ion-button color="dark" *ngIf='editorService.editor.isDraft&&editorService.dirty' (click)="publishPost()" [disabled]="editorService.editor.description.content.trim().length<45">
+						<!-- <ion-icon name="save-outline"></ion-icon> -->
+		        {{(editorService.editor.description.content.trim().length<=45)?46 - editorService.editor.description.content.trim().length + ' left to publish':'Publish'}}
+		      </ion-button>
+		      <ion-button color="dark" *ngIf='!editorService.editor.isDraft&&editorService.dirty' (click)="updatePost()">
+						<!-- <ion-icon name="save-outline"></ion-icon> -->
+			{{(editorService.editor.description.content.trim().length<=45)?46 - editorService.editor.description.content.trim().length + ' left to update':'Update'}}
+		      </ion-button>
+					<ion-button (click)="openOptionsList($event)">
+						<ion-icon slot="icon-only" name="ellipsis-vertical-outline"></ion-icon>
+					</ion-button>
+		    </ion-buttons>
+			</ion-row>
+	  </ion-toolbar>
+	</ion-header>
+
+	<ion-header  *ngIf="options.isQuill" [ngClass]="editorService.editor.color" class="ion-no-border" [translucent]="true">
+		  <ion-toolbar>
+			    <ion-buttons>
+			      <ion-button slot="icon-only" (click)="dismiss()">
+			        <ion-icon name="arrow-back-outline"></ion-icon>
+			      </ion-button>
+			    </ion-buttons>
+
+					<!-- <ion-title>Select text to format</ion-title> -->
+
+					<!-- <ion-searchbar mode="ios" enterkeyhint="search" spellcheck="true" type="text" search-icon="book-outline" [value]="searchQuery" (ionInput)='searchUpdate($event)' animated placeholder="Quick Meaning"></ion-searchbar>
+			    <ion-buttons slot="primary">
+						<ion-button (click)="doSearch()" *ngIf="searchQuery">
+			        <ion-icon slot="icon-only" name="search-outline"></ion-icon>
+			      </ion-button>
+			    </ion-buttons> -->
+
+			    <ion-buttons slot="primary">
+
+						<!-- <ion-button (click)="editorService.editor.description.content.history.undo()">
+							<ion-icon slot="icon-only" name="arrow-undo-outline"></ion-icon>
+						</ion-button>
+
+						<ion-button (click)="editorService.editor.description.content.history.redo()">
+							<ion-icon slot="icon-only" name="arrow-redo-outline"></ion-icon>
+						</ion-button> -->
+
+						<ion-select mode="ios" interface="popover" placeholder="Category" (ionChange)="selectCategory($event)">
+							<ion-select-option *ngFor="let category of categoryList" [value]="category.name">{{category.name}}</ion-select-option>
+						</ion-select>
+
+						<ion-button color="success" (click)="publishQuillPost()" [disabled]="!editorService.dirty">
+							<ion-note>Publish</ion-note>
+						</ion-button>
+
+			      <!-- <ion-button color="dark" *ngIf='editorService.editor.isDraft&&editorService.dirty' (click)="publishQuillPost()" [disabled]="editorService.editor.getLength()<45">
+							<ion-icon name="save-outline"></ion-icon>
+			        {{(editorService.editor.getLength()<=45)?46 - editorService.editor.getLength() + ' left to publish':'Publish'}}
+			      </ion-button>
+			      <ion-button color="dark" *ngIf='!editorService.editor.isDraft&&editorService.dirty' (click)="updateQuillPost()">
+							<ion-icon name="save-outline"></ion-icon>
+				{{(editorService.editor.getLength()<=45)?46 - editorService.editor.getLength() + ' left to update':'Update'}}
+			      </ion-button> -->
+						<ion-button (click)="openOptionsList($event)">
+							<ion-icon slot="icon-only" name="ellipsis-vertical-outline"></ion-icon>
+						</ion-button>
+			    </ion-buttons>
+		  </ion-toolbar>
+		</ion-header>
+
+<ion-content id="body">
+
+	<!-- <ion-buttons>
+		<ion-button (click)="searchImages($event)" *ngIf="!editorService.editor.media.thumbnail.url&&editorService.editor.title!=''" class='editor-image' >
+			<ion-icon name="images-outline" slot='end'></ion-icon>
+		</ion-button>
+	</ion-buttons> -->
+
+		<!-- <ion-note style='text-align: right' lines='none' style='padding: 2px 10px;' *ngIf="editorService.editor.media.thumbnail.url">
+		Click on Image for Options
+	</ion-note> -->
+	<ion-grid *ngIf='!isImagesClosed&&(images.total!=0)&&(images.results?(images.results.length>0):false)' style='padding: 0'>
+		<ion-item lines='none'>
+			{{isCollapsed?'Change title for new search':'Suggested Images'}}
+			<ion-icon slot="end" (click)='isCollapsed=!isCollapsed' [name]="isCollapsed?'chevron-down-circle-outline':'close-circle-outline'"></ion-icon>
+		</ion-item>
+		<ion-row *ngIf='!isCollapsed'>
+			<ion-col (click)='addImage(img)' style='padding: 0.5px' [size]='4' *ngFor='let img of images.results'>
+				<ion-img ion-img-cache [src]="img.urls.thumb"></ion-img>
+			</ion-col>
+		</ion-row>
+		<ion-segment scrollable value="1" *ngIf='!isCollapsed'>
+		  <ion-segment-button (click)="searchImages(index)" [value]='index' *ngFor="let index of pages">
+		    {{index}}
+		  </ion-segment-button>
+		</ion-segment>
+	</ion-grid>
+	<ion-img ion-img-cache (click)="confirmSearchImages($event)" [src]="editorService.editor.media.standard_resolution.url" *ngIf="editorService.editor.media.standard_resolution.url"></ion-img>
+
+	<ion-item lines="none">
+	  <ion-input [disabled]="!editorService.editor.isDraft && !editorService.editor.new" autofocus="true" (ionBlur)="titleOnBlur($event)" [value]="editorService.editor.title" (ionInput)="updateTitle($event)" (keypress)="omit_special_char($event)" placeholder="Title" class='editor-title'>
+	  </ion-input>
+	  <!-- <ion-textarea autofocus="true" *ngIf="editorService.editor.title.length>14" (ionBlur)="titleOnBlur($event)" [value]="editorService.editor.title" (ionInput)="updateTitle($event)" placeholder="Title" class='editor-title'>
+	  </ion-textarea> -->
+		<ion-buttons>
+			<ion-button (click)="selectImage()" *ngIf="!editorService.editor.media.thumbnail.url&&editorService.editor.title!=''" class='editor-image' >
+				<ion-icon name="images-outline" slot='end'></ion-icon>
+			</ion-button>
+		</ion-buttons>
+	</ion-item>
+
+	<!-- <ion-item lines="none"> -->
+	<!-- </ion-item> -->
+
+	<ion-item lines="none">
+	  <ion-input [value]="editorService.editor?editorService.editor.subtitle:''" (ionInput)="updateSubTitle($event)" (ionBlur)="subtitleOnBlur($event)" placeholder="Subtitle" class='editor-subtitle'>
+	  </ion-input>
+	</ion-item>
+
+	<ion-item lines="none" *ngIf="!options.isQuill">
+
+	  <ion-textarea (ionInput)="updateBody($event)" (ionBlur)="bodyOnBlur($event)" rows="25" cols="20" placeholder="Impact the World..." [value]="editorService.editor.description?editorService.editor.description.content:''" class="editor-body">
+
+	  </ion-textarea>
+	</ion-item>
+
+	<div *ngIf="options.isQuill" id="scrolling-container">
+		<div id="editor">
+			<!-- <ion-input id="title-placeholder" (click)="clearText('title')">{{titlePlaceholder}}</ion-input>
+			<ion-input id="content-placeholder" (click)="clearText('content')">{{contentPlaceholder}}</ion-input> -->
+		</div>
+		<!-- <div id="toolbar"></div> -->
+	</div>
+
+</ion-content>
+
+<ion-footer class="ion-no-border" *nfIf="options.isQuill">
+	<!-- <div id="toolbar"></div> -->
+</ion-footer>
+
+<ion-footer class="ion-no-border" *nfIf="!options.isQuill">
+
+	<app-color-palette
+  *ngIf="editorService.colorPaletteShow"></app-color-palette>
+
+	<!-- <ion-item>
+
+	</ion-item> -->
+
+	<ion-toolbar *ngIf="showHashtag">
+		<ion-segment scrollable mode="md">
+	      <ion-segment-button *ngFor='let tag of editorService.editor.tags'>
+	        <ion-label>#{{tag}}</ion-label>
+	      </ion-segment-button>
+	  </ion-segment>
+	</ion-toolbar>
+
+
+	<ion-toolbar *ngIf="isSearchOpen">
+		<ion-searchbar (ionInput)='searchUpdate($event)' animated placeholder="Find meaning"></ion-searchbar>
+		<ion-buttons slot="primary">
+      <ion-button (click)="doSearch()">
+        <ion-icon slot="icon-only" name="search-outline"></ion-icon>
+      </ion-button>
+			<ion-button (click)="isSearchOpen=false">
+        <ion-icon slot="icon-only" name="close-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+	</ion-toolbar>
+
+  <ion-toolbar>
+
+    <ion-buttons>
+      <ion-button slot="icon-only" (click)="toggleColorPalette($event)">
+        <ion-icon name="color-palette-outline"></ion-icon>
+      </ion-button>
+      <ion-note>
+		    {{editorService.editor.status}}
+		  </ion-note>
+			<ion-searchbar mode="ios" enterkeyhint="search" spellcheck="true" type="text" search-icon="book-outline" [value]="searchQuery" (ionInput)='searchUpdate($event)' animated placeholder="Quick Meaning"></ion-searchbar>
+    </ion-buttons>
+
+    <ion-buttons slot="primary">
+			<ion-button (click)="doSearch()" *ngIf="searchQuery">
+        <ion-icon slot="icon-only" name="search-outline"></ion-icon>
+      </ion-button>
+			<ion-button (click)="showHashtag=!showHashtag" *ngIf="editorService.editor.tags.length>0">
+        <!-- <ion-icon slot="icon-only" name="search-outline"></ion-icon> -->
+				#
+      </ion-button>
+			<ion-button (click)="(editorService.grammarCorrections.length>0)?applyGrammarCorrections():proofRead($event)">
+        <ion-icon slot="icon-only" name="color-wand-outline"></ion-icon>
+				<ion-badge *ngIf="editorService.grammarCorrections.length>0" color="warning">{{editorService.grammarCorrections.length}}</ion-badge>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

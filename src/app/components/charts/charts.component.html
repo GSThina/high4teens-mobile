@@ -1,0 +1,45 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+
+    <ion-row>
+			<ion-buttons>
+				<ion-button color="dark" slot="icon-only" (click)="dismiss()">
+					<ion-icon name="arrow-back-outline"></ion-icon>
+				</ion-button>
+			</ion-buttons>
+			<ion-title>Statistics</ion-title>
+		</ion-row>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <ion-card class="welcome-card">
+    <ion-card-header>
+      <ion-card-subtitle>Posts per Category</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <canvas #categoryChart></canvas>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card class="welcome-card">
+    <ion-card-header>
+      <ion-card-subtitle>Posts per Month</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <canvas #postsByMonthChart></canvas>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card class="welcome-card">
+    <ion-card-header>
+      <ion-card-subtitle>Posts per Month by Category</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <canvas #postsByCategoryByMonthChart></canvas>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

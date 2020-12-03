@@ -2,17 +2,17 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": []
+    "types": ["node"]
   },
-  "files": [
-    "src/main.ts",
-    "src/polyfills.ts"
-  ],
   "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts"
+    "src/**/*.ts"
   ],
   "exclude": [
-    "src/**/*.spec.ts"
+    "src/test.ts",
+    "src/**/*.spec.ts",
+    "src/**/*.module.ts",
+    "src/app/pages/post/post.page.ts",
+    "src/app/services/interceptor.service.ts",
+    "src/environments/environment.prod.ts"
   ]
 }

@@ -1,0 +1,38 @@
+.tile{
+  padding: 0.8em;
+}
+
+.tile ion-icon{
+  font-size: 2em;
+}
+
+.tile p{
+  font-size: 0.8em;
+}
+
+.category-selected{
+  color: white;
+  background-color: silver;
+  // padding: 1em;
+}
+
+.category-not-selected{
+  color: grey;
+  // padding: 1em;
+}
+
+.category-selected ion-icon{
+  font-size: 2.5em;
+}
+
+.category-selected .tile{
+  padding: 0.4em;
+}
+
+ion-slide{
+  background-color: rgba(0, 0, 0, 0);
+}
+
+ion-note{
+  font-size: 0.75em;
+}

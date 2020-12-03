@@ -1,0 +1,29 @@
+<!-- <ion-header class="ion-no-border"> -->
+	<!-- Searchbar in a Toolbar -->
+	<!-- <ion-toolbar> -->
+		
+	<!-- </ion-toolbar> -->
+<!-- </ion-header> -->
+
+<ion-content class='content'>
+	<ion-header class="ion-no-border" [translucent]="true" collapse="condense">
+		<ion-searchbar placeholder="Search Images" showCancelButton="focus" animated></ion-searchbar>
+	</ion-header>
+
+	<ion-grid *ngIf='!isImagesClosed' style='padding: 1px'>
+	  <ion-row *ngFor="let index of [0,1,2]">
+	  	<!-- <ion-col></ion-col> -->
+	    <ion-col style='padding: 0.5px' [size]='4' *ngFor='let index of [0,1,2]'>
+	      <ion-img src='../../../assets/img/logo-icon.png'></ion-img>
+	    </ion-col>
+	  	<!-- <ion-col></ion-col> -->
+	  </ion-row>
+	</ion-grid>
+	<ion-item lines="none">
+		<ion-segment scrollable value="1">
+		  <ion-segment-button [value]='index' *ngFor="let index of pages">
+		    {{index}}
+		  </ion-segment-button>
+		</ion-segment>
+	</ion-item>
+</ion-content>

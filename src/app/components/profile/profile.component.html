@@ -1,0 +1,302 @@
+<ion-header class="ion-no-border" [translucent]="true" mode="md">
+  <ion-toolbar>
+    <ion-buttons>
+      <ion-button slot="start" (click)="dismiss($event)">
+        <ion-icon color="dark" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div class="center profile-div">
+    <ion-avatar class='profile-pic'>
+      <img [src]="user.otherUser.profile_picture?user.otherUser.profile_picture:dataService.dummyimage">
+    </ion-avatar>
+
+    <div>
+      <b>{{user.otherUser.full_name}}</b>
+      <br>
+      <ion-note>(Community Member)</ion-note>
+      <!-- <ion-note>({{user.me.role}})</ion-note> -->
+    </div>
+  </div>
+
+  <ion-grid *ngIf="user.currentUserId != userDetails.userid">
+    <ion-row>
+      <ion-col size="4">
+
+      </ion-col>
+      <ion-col size="4" value="followUser">
+        <ion-button (click)="checkForFollowing()" [ngClass]="user.isUserFollowing?'following-btn':'follow-btn'" expand="block" strong="false" fill="outline" size="small">
+          {{user.isUserFollowing?'Following':'Follow'}}
+          <!-- <ion-icon slot="end" [name]="user.isUserFollowing?'people':'person-add-outline'"></ion-icon> -->
+        </ion-button>
+      </ion-col>
+      <!-- <ion-col size="2" value="followUser">
+        <ion-button (click)="checkForFollowing()" class="action-buttons" expand="block" fill="outline" color="primary">
+          <ion-icon slot="end" [name]="user.isUserFollowing?'people':'person-add-outline'"></ion-icon>
+        </ion-button>
+      </ion-col> -->
+      <ion-col size="4">
+
+      </ion-col>
+      <!-- <ion-col size="6" value="followUser">
+        <ion-button (click)="checkForFollowing()" class="action-buttons" expand="block" fill="outline" color="primary">{{user.isUserFollowing?'Following':'Follow'}}</ion-button>
+      </ion-col> -->
+      <!-- <ion-col size="6" value="messageUser">
+        <ion-button class="action-buttons">Message</ion-button>
+      </ion-col> -->
+    </ion-row>
+  </ion-grid>
+
+  <!-- <ion-segment (ionChange)="segmentChanged($event)"  mode="ios" [value]="showSegment"> -->
+    <!-- <ion-segment-button value="posts">
+      <ion-label>Posts</ion-label>
+      <ion-icon name="images-outline"></ion-icon>
+    </ion-segment-button>
+    <ion-segment-button value="stats">
+      <ion-label>Stats</ion-label>
+      <ion-icon name="analytics-outline"></ion-icon>
+    </ion-segment-button>
+    <ion-segment-button value="badges">
+      <ion-label>Badges</ion-label>
+      <ion-icon name="ribbon-outline"></ion-icon>
+    </ion-segment-button> -->
+  <!-- </ion-segment> -->
+
+  <ion-grid style='padding: 0' *ngIf="showSegment=='posts'&&(user.otherUser.posts==undefined||user.otherUser.posts==null)">
+    <ion-slide>
+      <div class="center">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="image-outline"></ion-icon>
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-card-subtitle>This author currently has no posts</ion-card-subtitle>
+      </ion-card-content>
+      </div>
+    </ion-slide>
+  </ion-grid>
+
+  <ion-grid *ngIf="user.otherUser.posts!=null" class="container">
+  <!-- <ion-grid *ngIf="showSegment=='posts'&&user.otherUser.posts!=null" class="container"> -->
+    <div *ngFor='let post of user.otherUser.posts.slice().reverse()'>
+      <ion-row class="post">
+        <ion-col size="2" (click)='openPostDetail(post,user.otherUser.posts)'>
+          <ion-img *ngIf="post.media.low_resolution.url" ion-img-cache [src]='post.media.thumbnail.url'></ion-img>
+        </ion-col>
+        <ion-col size="8" (click)='openPostDetail(post,user.otherUser.posts)'>
+          <!-- <ion-card-header (click)='openPostDetail(post,user.otherUser.posts)' > -->
+          <!-- </ion-card-header> -->
+          <ion-card-content>
+            <b>{{post.title.substr(0, 20)}}</b>
+            <!-- <p>{{post.subtitle}}</p> -->
+            <!-- <ion-chip color="clear">
+              <ion-avatar>
+                <img [src]="(post.user.profile_picture!=null)?post.user.profile_picture:data.dummyimage">
+              </ion-avatar>
+              <ion-label>{{post.user?post.user.full_name:'Community User'}}</ion-label>
+            </ion-chip> -->
+            <ion-row>
+              <ion-note>{{post.created_datetime | date:'medium':'+0530'}}</ion-note>
+            </ion-row>
+
+            <ion-row>
+              <ion-note *ngIf="post.views?post.views.length>0:false">{{post.views.length}} <ion-icon color="medium" name="eye-outline"></ion-icon></ion-note>
+              <ion-note *ngIf="post.rating?post.rating.length>0:false">{{post.rating.length}} <ion-icon color="danger" name="heart"></ion-icon></ion-note>
+              <ion-note *ngIf="post.comment?post.comment.length>0:false">{{post.comment.length}} <ion-icon color="medium" name="chatbubbles"></ion-icon></ion-note>
+            </ion-row>
+
+          </ion-card-content>
+        </ion-col>
+        <ion-col size="2">
+          <ion-buttons color="clear">
+            <ion-button (click)="sharePost(post)" color="success">
+              <ion-icon name="share-social-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-col>
+      </ion-row>
+
+      <!-- <ion-row>
+        <ion-col>
+          <ion-row>
+            <ion-card-content (click)='openPostDetail(post,user.otherUser.posts)' >
+              {{post.description.content.substr(0, 200)}}...
+            </ion-card-content>
+          </ion-row>
+        </ion-col>
+      </ion-row> -->
+    </div>
+  </ion-grid>
+
+  <ion-grid style='padding: 0' *ngIf="showSegment=='stats'&&(user.otherUser.stats==undefined||user.otherUser.stats==null)">
+    <ion-slide>
+      <div class="center">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="analytics-outline"></ion-icon>
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-card-subtitle>Stats seems to be under progress.
+          <br>Ping us to clarify</ion-card-subtitle>
+      </ion-card-content>
+      </div>
+    </ion-slide>
+  </ion-grid>
+
+  <ion-grid style='padding: 0' *ngIf="showSegment=='stats'&&user.otherUser.stats!=undefined">
+    <div>
+      <b>
+          <ion-row class="th">
+            <ion-col size='9' class="td">
+              <div>
+                Stats
+              </div>
+            </ion-col>
+            <ion-col size='3' class="td">
+              <div>
+                Number
+              </div>
+            </ion-col>
+          </ion-row>
+        </b>
+    </div>
+    <div>
+      <ion-row class="tr">
+        <ion-col size='9' class="td">
+          <div>
+            Streaks
+          </div>
+        </ion-col>
+        <ion-col size='3' class="td">
+          <div>
+            {{user.otherUser.stats.streaks}}
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row class="tr">
+        <ion-col size='9' class="td">
+          <div>
+            Streak Carry
+          </div>
+        </ion-col>
+        <ion-col size='3' class="td">
+          <div>
+            {{user.otherUser.stats.streakCarry}}
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row class="tr">
+        <ion-col size='9' class="td">
+          <div>
+            Badges
+          </div>
+        </ion-col>
+        <ion-col size='3' class="td">
+          <div>
+            {{user.otherUser.stats.badges.length}}
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row class="tr">
+        <ion-col size='9' class="td">
+          <div>
+            Total Posts
+          </div>
+        </ion-col>
+        <ion-col size='3' class="td">
+          <div>
+            {{user.otherUser.stats.posts}}
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row class="tr">
+        <ion-col size='9' class="td">
+          <div>
+            Themed Posts
+          </div>
+        </ion-col>
+        <ion-col size='3' class="td">
+          <div>
+            {{user.otherUser.stats.themedPost}}
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row class="tr">
+        <ion-col size='9' class="td">
+          <div>
+            Translations
+          </div>
+        </ion-col>
+        <ion-col size='3' class="td">
+          <div>
+            {{user.otherUser.stats.translations}}
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row class="tr">
+        <ion-col size='9' class="td">
+          <div>
+            Reviews
+          </div>
+        </ion-col>
+        <ion-col size='3' class="td">
+          <div>
+            {{user.otherUser.stats.discussions}}
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row class="tr">
+        <ion-col size='9' class="td">
+          <div>
+            Earned Points
+          </div>
+        </ion-col>
+        <ion-col size='3' class="td">
+          <div>
+            {{user.otherUser.stats.earnedPoints}}
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row class="tr">
+        <ion-col size='9' class="td">
+          <div>
+            Total Points
+          </div>
+        </ion-col>
+        <ion-col size='3' class="td">
+          <div>
+            {{user.otherUser.stats.totalPoints}}
+          </div>
+        </ion-col>
+      </ion-row>
+        <!-- <ion-col size='1' class="td">
+          <div (click)='viewWriterInfo($event, writer)'>
+            <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+          </div>
+        </ion-col> -->
+    </div>
+  </ion-grid>
+
+  <ion-grid style='padding: 0' *ngIf="showSegment=='badges'">
+    <ion-slide *ngIf="user.otherUser.stats?user.otherUser.stats.badges.length<=0:true">
+      <div class="center">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="ribbon-outline"></ion-icon>
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-card-subtitle>This author is yet to receive a Badge</ion-card-subtitle>
+      </ion-card-content>
+      </div>
+    </ion-slide>
+  </ion-grid>
+
+
+</ion-content>

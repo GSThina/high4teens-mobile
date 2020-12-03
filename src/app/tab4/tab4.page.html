@@ -1,0 +1,553 @@
+<ion-header class="ion-no-border" [translucent]="true" *ngIf="user.isLoaded">
+  <ion-toolbar>
+    <ion-title>{{user.me.username}}</ion-title>
+    <!-- <ion-buttons slot="secondary">
+      <ion-button (click)="doRefresh($event)">
+        <img style='width: 1.5em;' src="../../assets/img/logo-icon.png">
+      </ion-button>
+    </ion-buttons> -->
+
+    <ion-buttons slot="primary">
+      <!-- <ion-button (click)="openSearch()">
+        <img style='width: 1.5em;' src="../../assets/img/logo-icon.png">
+      </ion-button> -->
+      <!-- <ion-button disabled (click)="toggleEditable()">
+        <ion-icon slot="icon-only" [name]='editableIcon'></ion-icon>
+      </ion-button>
+      <ion-button disabled (click)="openInbox()">
+        <ion-icon slot="icon-only" name="chatbubbles-outline"></ion-icon>
+      </ion-button> -->
+
+      <ion-button (click)="openStatsModule()" [disabled]="(user.me.posts!=null)?user.me.posts.length<=0:true">
+        <ion-icon color="dark" slot="icon-only" name="analytics-outline"></ion-icon>
+      </ion-button>
+
+      <ion-button (click)="dropDownOptions($event)">
+        <img style='width: 1.5em;' src="../../assets/img/logo-icon.png">
+      </ion-button>
+
+      <ion-button *ngIf="!networkService.isNetworkAvailable" (click)="util.presentAlert('You seem to have poor Internet', 'Connectivity Issue')">
+        <ion-icon color="danger" slot="icon-only" name="wifi-outline"></ion-icon>
+      </ion-button>
+
+      <!-- <ion-icon button (click)='toggleEditable()' class='editableIcon' [name]='editableIcon'></ion-icon> -->
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-item lines="none" *ngIf="data.isNewUpdateAvailable">
+  New Update Available
+  <ion-button slot="end" (click)="util.updateApp($event)" color="primary" fill="clear" >
+    <ion-icon name="download-outline"></ion-icon>
+  </ion-button>
+</ion-item>
+
+<ion-content [fullscreen]="true" *ngIf="!user.isLoaded">
+
+    <ion-slide>
+      <div class="center">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="flash-off-outline"></ion-icon>
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-card-subtitle>Hey, looks like something is wrong with one of us!
+          <br/>Can we just speak and resolve it?</ion-card-subtitle>
+      </ion-card-content>
+      </div>
+    </ion-slide>
+
+</ion-content>
+<ion-content [fullscreen]="true" *ngIf="user.isLoaded">
+
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" *ngIf="networkService.isNetworkAvailable">
+    <ion-refresher-content
+        pullingIcon="refresh-outline"
+        pullingText="Pull to refresh"
+        refreshingSpinner="circles"
+        refreshingText="Refreshing...">
+      </ion-refresher-content>
+  </ion-refresher>
+
+  <div class="center profile-div">
+    <ion-avatar class='profile-pic' (click)="editProfilePic($event)">
+      <img [src]="user.me.profile_picture?user.me.profile_picture:data.dummyimage">
+    </ion-avatar>
+
+    <div>
+      <b>{{user.me.full_name}}</b>
+      <br>
+      <ion-note class="tcdd2a27">(Community Member)</ion-note>
+      <!-- <ion-note>({{user.me.role}})</ion-note> -->
+    </div>
+  </div>
+
+
+  <!-- <ion-card>
+	  <ion-card-header>
+	  	<ion-avatar class='profile-pic'>
+        <img [src]="user.me.profile_picture?user.me.profile_picture:data.dummyimage">
+		</ion-avatar>
+	    <ion-card-subtitle>
+	    	{{user.me.role}}
+		</ion-card-subtitle>
+	    <ion-card-title>
+	    	{{user.me.full_name}}
+	    </ion-card-title>
+	  </ion-card-header>
+
+	  <ion-card-content>
+	  	<ion-row class='metrics'>
+	  		<ion-col *ngIf="user.me.posts?user.me.posts.length>0:false">
+	  			<ion-note>Posts</ion-note>
+	  			<h2>{{user.me.posts?user.me.posts.length:0}}</h2>
+	  		</ion-col>
+			<ion-col *ngIf="user.me.stats?(user.me.stats.streaks!=0):false">
+	  			<ion-note>Streaks</ion-note>
+	  			<h2>{{user.me.stats?user.me.stats.streaks+ Days:'0 Days'}}</h2>
+	  		</ion-col>
+			<ion-col *ngIf="user.me.stats?(user.me.stats.badges.length>0):false">
+	  			<ion-note>Badges</ion-note>
+	  			<h2>{{user.me.stats?user.me.stats.badges.length:0}}</h2>
+	  		</ion-col>
+	  	</ion-row>
+
+	    <p>{{user.me.bio}}</p>
+	  </ion-card-content>
+	</ion-card> -->
+
+  <!-- <ion-toolbar> -->
+    <!-- <ion-segment mode="md" value="posts" color="danger"> -->
+    <!-- <ion-segment  mode="ios" (ionChange)="segmentChanged($event)">
+      <ion-segment-button value="friends">
+        <ion-label>Friends</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="enemies">
+        <ion-label>Enemies</ion-label>
+      </ion-segment-button>
+    </ion-segment> -->
+    <ion-segment (ionChange)="segmentChanged($event)" mode="ios" [value]="showSegment">
+      <ion-segment-button value="posts">
+        <ion-label>Library</ion-label>
+        <!-- <ion-icon name="images-outline"></ion-icon> -->
+      </ion-segment-button>
+      <ion-segment-button value="stats">
+        <ion-label>Stats</ion-label>
+        <!-- <ion-icon name="analytics-outline"></ion-icon> -->
+      </ion-segment-button>
+      <!-- <ion-segment-button value="badges">
+        <ion-icon name="ribbon-outline"></ion-icon>
+      </ion-segment-button> -->
+    </ion-segment>
+  <!-- </ion-toolbar> -->
+
+	  <!-- <ion-grid style='padding: 0' *ngIf="showSegment=='posts'">
+		  <ion-row *ngIf="user.me.posts?user.me.posts.length>0:false">
+		    <ion-col (click)='openPostDetail(post,user.me.posts)' style='padding: 0.25px' [size]='4' *ngFor='let post of user.me.posts.slice().reverse()'>
+		      <ion-img ion-img-cache *ngIf="post.media" [src]='post.media.thumbnail.url'></ion-img>
+		    </ion-col>
+		  </ion-row>
+      <ion-slide *ngIf="user.me.posts==undefined">
+        <div class="center">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="image-outline"></ion-icon>
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-card-subtitle>It's the right time to make your first post!</ion-card-subtitle>
+        </ion-card-content>
+        </div>
+      </ion-slide>
+		</ion-grid> -->
+
+    <ion-grid style='padding: 0' *ngIf="showSegment=='posts'&&(user.me.posts==undefined||user.me.posts==null)">
+      <ion-slide>
+        <div class="center">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="image-outline"></ion-icon>
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-card-subtitle>We are excited to have your first post with us!
+            <br>Click the Create icon to get started !</ion-card-subtitle>
+        </ion-card-content>
+        </div>
+      </ion-slide>
+    </ion-grid>
+
+    <ion-grid *ngIf="showSegment=='posts'&&user.me.posts!=null" class="container">
+
+      <div *ngFor='let post of user.me.posts.slice().reverse()'>
+        <ion-row class="post" *ngIf="post.isQuill">
+          <ion-col size="2" (click)='post.isDraft?editPost(post):openPostDetail(post,user.me.posts)'>
+            <ion-img *ngIf="post.media?post.media.low_resolution.url:false" [src]='post.media?post.media.thumbnail.url:data.dummyimage'></ion-img>
+          </ion-col>
+          <ion-col size="8" (click)='post.isDraft?editPost(post):openPostDetail(post,user.me.posts)'>
+            <!-- <ion-card-header (click)='openPostDetail(post,user.me.posts)' > -->
+            <!-- </ion-card-header> -->
+            <ion-card-content>
+              <b>{{post.title?post.title.substr(0, 20):'Untitled Draft'}}</b>
+              <!-- <p>{{post.subtitle}}</p> -->
+              <!-- <ion-chip color="clear">
+                <ion-avatar>
+                  <img [src]="(post.user.profile_picture!=null)?post.user.profile_picture:data.dummyimage">
+                </ion-avatar>
+                <ion-label>{{post.user?post.user.full_name:'Community User'}}</ion-label>
+              </ion-chip> -->
+              <ion-row>
+                <ion-note>{{post.created_datetime | date:'medium':'+0530'}}</ion-note>
+              </ion-row>
+
+              <ion-row>
+                <ion-note *ngIf="post.views?post.views.length>0:false">{{post.views.length}} <ion-icon color="medium" name="eye-outline"></ion-icon></ion-note>
+                <ion-note *ngIf="post.rating?post.rating.length>0:false">{{post.rating.length}} <ion-icon color="danger" name="heart"></ion-icon></ion-note>
+                <ion-note *ngIf="post.comment?post.comment.length>0:false">{{post.comment.length}} <ion-icon color="medium" name="chatbubbles"></ion-icon></ion-note>
+              </ion-row>
+
+            </ion-card-content>
+          </ion-col>
+          <ion-col size="2">
+            <ion-buttons color="clear">
+              <ion-button *ngIf="!post.isDraft" (click)="sharePost(post)" color="success">
+                <ion-icon name="share-social-outline"></ion-icon>
+              </ion-button>
+              <ion-button *ngIf="post.isDraft" (click)="editPost(post)" color="dark">
+                <ion-icon name="create-outline"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          </ion-col>
+        </ion-row>
+        <ion-row class="post" *ngIf="!post.isQuill">
+          <ion-col size="2" (click)='post.isDraft?editPost(post):openPostDetail(post,user.me.posts)'>
+            <ion-img *ngIf="post.media?post.media.low_resolution.url:false" [src]='post.media?post.media.thumbnail.url:data.dummyimage'></ion-img>
+          </ion-col>
+          <ion-col size="8" (click)='post.isDraft?editPost(post):openPostDetail(post,user.me.posts)'>
+            <!-- <ion-card-header (click)='openPostDetail(post,user.me.posts))' > -->
+            <!-- </ion-card-header> -->
+            <ion-card-content>
+              <b>{{post.title?post.title.substr(0, 20):'Untitled Draft'}}</b>
+              <!-- <p>{{post.subtitle}}</p> -->
+              <!-- <ion-chip color="clear">
+                <ion-avatar>
+                  <img [src]="(post.user.profile_picture!=null)?post.user.profile_picture:data.dummyimage">
+                </ion-avatar>
+                <ion-label>{{post.user?post.user.full_name:'Community User'}}</ion-label>
+              </ion-chip> -->
+              <ion-row>
+                <ion-note>{{post.created_datetime | date:'medium':'+0530'}}</ion-note>
+              </ion-row>
+
+              <ion-row>
+                <ion-note *ngIf="post.views?post.views.length>0:false">{{post.views.length}} <ion-icon color="medium" name="eye-outline"></ion-icon></ion-note>
+                <ion-note *ngIf="post.rating?post.rating.length>0:false">{{post.rating.length}} <ion-icon color="danger" name="heart"></ion-icon></ion-note>
+                <ion-note *ngIf="post.comment?post.comment.length>0:false">{{post.comment.length}} <ion-icon color="medium" name="chatbubbles"></ion-icon></ion-note>
+              </ion-row>
+
+            </ion-card-content>
+          </ion-col>
+          <ion-col size="2">
+            <ion-buttons color="clear">
+              <ion-button *ngIf="!post.isDraft" (click)="sharePost(post)" color="success">
+                <ion-icon name="share-social-outline"></ion-icon>
+              </ion-button>
+              <ion-button *ngIf="post.isDraft" (click)="editPost(post)" color="dark">
+                <ion-icon name="create-outline"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          </ion-col>
+        </ion-row>
+
+        <!-- <ion-row>
+          <ion-col>
+            <ion-row>
+              <ion-card-content (click)='openPostDetail(post,user.me.posts))' >
+                {{post.description.content.substr(0, 200)}}...
+              </ion-card-content>
+            </ion-row>
+          </ion-col>
+        </ion-row> -->
+      </div>
+    </ion-grid>
+
+    <ion-grid style='padding: 0' *ngIf="showSegment=='stats'&&(user.me.stats==undefined||user.me.stats==null)">
+      <ion-slide>
+        <div class="center">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="analytics-outline"></ion-icon>
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-card-subtitle>Stats seems to be under progress.
+            <br>Ping us to clarify</ion-card-subtitle>
+        </ion-card-content>
+        </div>
+      </ion-slide>
+    </ion-grid>
+
+    <ion-grid style='padding: 0' *ngIf="showSegment=='stats'&&user.me.stats!=undefined">
+      <ion-list class="streak" *ngIf="(user.me.posts!=null)?user.me.posts.length>0:false">
+
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-card class="welcome-card">
+                <ion-card-header>
+                  <ion-card-title class="tcdd2a27">~{{totalUniqueViews}}</ion-card-title>
+                  <ion-card-subtitle>Content Reach</ion-card-subtitle>
+                </ion-card-header>
+                <ion-card-content>
+                  <p>Number of unique reads of your content</p>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+            <ion-col>
+              <ion-card class="welcome-card">
+                <ion-card-header>
+                  <ion-card-title class="tcdd2a27">{{(totalUniqueViews!=0)?totalRating:0}}</ion-card-title>
+                  <ion-card-subtitle>Writer Rating</ion-card-subtitle>
+                </ion-card-header>
+                <ion-card-content>
+                  <p>Avg. rating obtained from all the posts on unique post visits</p>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
+        <ion-list-header color="light">Streak Update</ion-list-header>
+        <ion-card class="welcome-card">
+          <ion-card-header>
+            <ion-card-title *ngIf="user.me.stats.streaks>0" class="tcdd2a27">{{(user.me.stats.streaks>todate)?todate:user.me.stats.streaks}} day{{user.me.stats.streaks==1?'':'s'}}</ion-card-title>
+            <ion-card-subtitle>Next Streak Update {{nextStreakTime}}</ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>
+            <h3 *ngIf="user.me.stats.streaks>0">Total Streaks: {{user.me.stats.streaks}}</h3>
+            <p>Number of days you have been posting without a break in this month</p>
+            <!-- <h3>Max Streaks until now: {{nextStreakTime}}</h3> -->
+          </ion-card-content>
+        </ion-card>
+
+        <ion-list-header color="light">Points</ion-list-header>
+        <ion-card class="welcome-card">
+          <ion-card-header>
+            <ion-card-title class="tcdd2a27">{{user.me.badges.length * 5 + user.me.stats.posts + user.me.stats.themedPost * 2 + user.me.stats.translations * 5 + user.me.stats.discussions * 2}}</ion-card-title>
+            <!-- <ion-card-title class="tcdd2a27">{{user.me.badges.length * 5 + user.me.stats.posts + user.me.stats.themedPost * 2 + user.me.stats.translations * 5 + user.me.stats.discussions * 2}}</ion-card-title> -->
+            <!-- <ion-card-subtitle></ion-card-subtitle> -->
+          </ion-card-header>
+          <ion-card-content>
+            <p>Includes the points for every post, badge, comment and rating you make</p>
+            <!-- <h3>Max Streaks until now: {{nextStreakTime}}</h3> -->
+          </ion-card-content>
+        </ion-card>
+
+        <!-- <ion-list-header color="light">Badges</ion-list-header>
+        <ion-card class="welcome-card">
+          <ion-card-header>
+            <ion-card-title class="tcdd2a27">{{user.me.badges.length}}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <p>Badges you obtain in our Community</p>
+          </ion-card-content>
+        </ion-card> -->
+
+        <!-- <ion-row>
+          <ion-slide style="height: 0em; padding: 50%; font-size: 5em; text-weight: bold">
+            {{user.me.stats.streaks}} day{{user.me.stats.streaks==1?'':'s'}}
+          </ion-slide>
+          <h2>Next Streak Update: {{nextStreakTime}}</h2>
+        </ion-row> -->
+        <ion-row>
+          <!-- <google-chart [data]="pieChart"></google-chart> -->
+        </ion-row>
+      </ion-list>
+      <ion-list *ngIf="(user.me.posts==null)||(user.me.posts.length<=0)">
+        <ion-list-header color="light">No posts yet?</ion-list-header>
+        <ion-card class="welcome-card">
+          <ion-card-header>
+            <ion-card-title class="tcdd2a27">View all your stats by creating your first post</ion-card-title>
+            <!-- <ion-card-title class="tcdd2a27">{{user.me.badges.length * 5 + user.me.stats.posts + user.me.stats.themedPost * 2 + user.me.stats.translations * 5 + user.me.stats.discussions * 2}}</ion-card-title> -->
+            <!-- <ion-card-subtitle></ion-card-subtitle> -->
+          </ion-card-header>
+          <ion-card-content>
+            <!-- <p>Includes the points for every post, badge, comment and rating you make</p> -->
+            <!-- <h3>Max Streaks until now: {{nextStreakTime}}</h3> -->
+          </ion-card-content>
+        </ion-card>
+      </ion-list>
+      <!-- <div>
+        <b>
+            <ion-row class="th">
+              <ion-col size='9' class="td">
+                <div>
+                  Stats
+                </div>
+              </ion-col>
+              <ion-col size='3' class="td">
+                <div>
+                  Number
+                </div>
+              </ion-col>
+            </ion-row>
+          </b>
+      </div>
+      <div>
+       <ion-row class="tr">
+          <ion-col size='9' class="td">
+            <div>
+              Streaks
+            </div>
+          </ion-col>
+          <ion-col size='3' class="td">
+            <div>
+              {{user.me.stats.streaks}}
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row class="tr">
+          <ion-col size='9' class="td">
+            <div>
+              Streak Carry
+            </div>
+          </ion-col>
+          <ion-col size='3' class="td">
+            <div>
+              {{user.me.stats.streakCarry}}
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row class="tr">
+          <ion-col size='9' class="td">
+            <div>
+              Badges
+            </div>
+          </ion-col>
+          <ion-col size='3' class="td">
+            <div>
+              {{user.me.badges.length}}
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row class="tr">
+          <ion-col size='9' class="td">
+            <div>
+              Total Posts
+            </div>
+          </ion-col>
+          <ion-col size='3' class="td">
+            <div>
+              {{user.me.stats.posts}}
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row class="tr">
+          <ion-col size='9' class="td">
+            <div>
+              Themed Posts
+            </div>
+          </ion-col>
+          <ion-col size='3' class="td">
+            <div>
+              {{user.me.stats.themedPost}}
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row class="tr">
+          <ion-col size='9' class="td">
+            <div>
+              Translations
+            </div>
+          </ion-col>
+          <ion-col size='3' class="td">
+            <div>
+              {{user.me.stats.translations}}
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row class="tr">
+          <ion-col size='9' class="td">
+            <div>
+              Reviews
+            </div>
+          </ion-col>
+          <ion-col size='3' class="td">
+            <div>
+              {{user.me.stats.discussions}}
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row class="tr">
+          <ion-col size='9' class="td">
+            <div>
+              Earned Points
+            </div>
+          </ion-col>
+          <ion-col size='3' class="td">
+            <div>
+              {{user.me.badges.length * 5}}
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row class="tr">
+          <ion-col size='9' class="td">
+            <div>
+              Total Points
+            </div>
+          </ion-col>
+          <ion-col size='3' class="td">
+            <div>
+              {{user.me.badges.length * 5 + user.me.stats.posts + user.me.stats.themedPost * 2 + user.me.stats.translations * 5 + user.me.stats.discussions * 2}}
+            </div>
+          </ion-col>
+        </ion-row> -->
+          <!-- <ion-col size='1' class="td">
+            <div (click)='viewWriterInfo($event, writer)'>
+              <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+            </div>
+          </ion-col>
+      </div> -->
+		  <!-- <ion-row *ngIf="user.me.posts?user.me.posts.length>0:false">
+		    <ion-col (click)='openPostDetail(post,user.me.posts))' style='padding: 0.25px' [size]='4' *ngFor='let post of user.me.posts.slice().reverse()'>
+		      <ion-img ion-img-cache *ngIf="post.media" [src]='post.media.thumbnail.url'></ion-img>
+		    </ion-col>
+		  </ion-row> -->
+		</ion-grid>
+
+    <ion-grid style='padding: 0' *ngIf="showSegment=='badges'">
+      <ion-slide *ngIf="user.me?user.me.badges.length<=0:true">
+        <div class="center">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="ribbon-outline"></ion-icon>
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-card-subtitle>You are yet to receive a Badge</ion-card-subtitle>
+        </ion-card-content>
+        </div>
+      </ion-slide>
+      <ion-grid class="badges" *ngIf="user.me?user.me.badges.length>0:false">
+        <ion-row>
+          <ion-col size="6" *ngFor="let badge of user.me.badges">
+            <ion-slide style="height: 0em; padding: 50%;" (click)="openBadgeComponent($event, badge)">
+              <ion-icon name="trophy-outline"></ion-icon>
+              {{badge.name}}
+            </ion-slide>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-grid>
+
+    <!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button (click)='openWriteComponent()' size="small" color="success">
+        <ion-icon name="pencil-outline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab> -->
+
+
+
+</ion-content>

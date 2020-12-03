@@ -1,0 +1,159 @@
+<ion-header class="ion-no-border" [translucent]="true">
+
+  <ion-toolbar>
+    <ion-title>Settings</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="dismiss($event)">
+        <ion-icon color="medium" slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+
+  <ion-list>
+    <ion-list-header lines="none">
+      <ion-label>Application</ion-label>
+    </ion-list-header>
+    <ion-item lines="none">
+      <ion-label color="primary">
+        <h2>Language</h2>
+      </ion-label>
+      <ion-select mode="ios" interface="popover" placeholder="Select One" value="en">
+        <ion-select-option value="ta">தமிழ்</ion-select-option>
+        <ion-select-option value="en">English</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label color="primary">
+        <h2>Dark Mode</h2>
+      </ion-label>
+      <ion-toggle mode="ios"></ion-toggle>
+    </ion-item>
+
+    <ion-list-header lines="none">
+      <ion-label>Receive Emails</ion-label>
+      <ion-button>Select / Clear All</ion-button>
+    </ion-list-header>
+    <ion-item lines="none">
+      <ion-label color="primary">
+        <h2>My Digest</h2>
+      </ion-label>
+      <ion-select mode="ios" interface="popover" placeholder="Select One" value="weekly">
+        <ion-select-option value="never">Never</ion-select-option>
+        <ion-select-option value="daily">Daily</ion-select-option>
+        <ion-select-option value="weekly">Weekly</ion-select-option>
+        <ion-select-option value="monthly">Monthly</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label color="primary">
+        <h2>Community Digest</h2>
+      </ion-label>
+      <ion-select mode="ios" interface="popover" placeholder="Select One" value="weekly">
+        <ion-select-option value="never">Never</ion-select-option>
+        <ion-select-option value="daily">Daily</ion-select-option>
+        <ion-select-option value="weekly">Weekly</ion-select-option>
+        <ion-select-option value="monthly">Monthly</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label color="primary">
+        <h2>Activity updates</h2>
+      </ion-label>
+      <ion-select mode="ios" interface="popover" placeholder="Select One" value="every">
+        <ion-select-option value="never">Never</ion-select-option>
+        <ion-select-option value="every">Every Actiivty</ion-select-option>
+        <ion-select-option value="weekly">Weekly</ion-select-option>
+        <ion-select-option value="monthly">Monthly</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-list-header lines="none">
+      <ion-label>Reminders</ion-label>
+      <ion-button>Select / Clear All</ion-button>
+    </ion-list-header>
+    <ion-item lines="none">
+      <ion-label color="primary">
+        <h2>To <b>Write</b> Daily</h2>
+      </ion-label>
+      <ion-toggle mode="ios"></ion-toggle>
+      <ion-datetime displayFormat="HH:mm a" value="17:00"></ion-datetime>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label color="primary">
+        <h2>To <b>Read</b> Daily</h2>
+      </ion-label>
+      <ion-toggle mode="ios"></ion-toggle>
+      <ion-datetime displayFormat="HH:mm a" value="07:00"></ion-datetime>
+    </ion-item>
+
+    <ion-list-header lines="none">
+      <ion-label>Notifications</ion-label>
+      <ion-button>Select / Clear All</ion-button>
+    </ion-list-header>
+    <ion-item lines="none">
+      <ion-label color="primary">
+        <h2>All <b>New Posts</b></h2>
+      </ion-label>
+      <ion-toggle [(ngModel)]="allNewPosts" [checked]="allNewPosts" (ionChange)="saveSettingDetails($event,10)" mode="ios"></ion-toggle>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label color="primary">
+        <h2><b>New Posts</b> from whom I follow</h2>
+      </ion-label>
+      <ion-toggle [(ngModel)]="followersNewPosts" [checked]="followersNewPosts" (ionChange)="saveSettingDetails($event,11)" mode="ios"></ion-toggle>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label color="primary">
+        <h2>When someone <b>Follows me</b></h2>
+      </ion-label>
+      <ion-toggle [(ngModel)]="onFollow" [checked]="onFollow" (ionChange)="saveSettingDetails($event,12)" mode="ios"></ion-toggle>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label color="primary">
+        <h2>When someone <b>Likes</b> my post</h2>
+      </ion-label>
+      <ion-toggle [(ngModel)]="onLike" [checked]="onLike" (ionChange)="saveSettingDetails($event,13)" mode="ios"></ion-toggle>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label color="primary">
+        <h2>When someone <b>Comments</b> on my post</h2>
+      </ion-label>
+      <ion-toggle [(ngModel)]="onComment" [checked]="onComment" (ionChange)="saveSettingDetails($event,14)" mode="ios"></ion-toggle>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label color="primary">
+        <h2>When the <b>Stats</b> is updated</h2>
+      </ion-label>
+      <ion-toggle [(ngModel)]="statsUpdate" [checked]="statsUpdate" (ionChange)="saveSettingDetails($event,15)" mode="ios"></ion-toggle>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label color="primary">
+        <h2>When a <b>New Activity</b> is posted</h2>
+      </ion-label>
+      <ion-toggle [(ngModel)]="newActivity" [checked]="newActivity" (ionChange)="saveSettingDetails($event,16)" mode="ios"></ion-toggle>
+    </ion-item>
+
+    <ion-list-header lines="none">
+      <ion-label>App Updates</ion-label>
+      <ion-button>Check for updates</ion-button>
+    </ion-list-header>
+    <ion-item lines="none">
+      <ion-label color="primary">
+        <h2><b>New Update</b> available</h2>
+      </ion-label>
+      <ion-button>Install</ion-button>
+    </ion-item>
+
+    <ion-list-header lines="none">
+      <ion-label>Account</ion-label>
+      <ion-button>Active</ion-button>
+    </ion-list-header>
+    <ion-item lines="none">
+      <ion-label color="primary">
+        <h2>Change <b>Password</b></h2>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

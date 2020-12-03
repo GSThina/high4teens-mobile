@@ -1,0 +1,43 @@
+<ion-item lines="none">
+  <ion-note>Sort By</ion-note>
+</ion-item>
+
+<ion-item lines="full">
+  <ion-label position="floating">Choose</ion-label>
+  <ion-select value="sortDateLatest" okText="Sort" cancelText="Cancel" (ionChange)="sortFunction($event)">
+    <ion-select-option value="sortDateLatest" >Latest First</ion-select-option>
+    <ion-select-option value="sortDateOldest" >Oldest First</ion-select-option>
+    <ion-select-option value="sortCredits" >Credits</ion-select-option>
+  </ion-select>
+</ion-item>
+
+<ion-item lines="none">
+  <ion-note position="fixed">Filter By</ion-note>
+</ion-item>
+
+<ion-item lines="none">
+  <ion-label position="floating">Category</ion-label>
+  <ion-select disabled value="General" okText="Filter" cancelText="Cancel" (ionChange)="filterFunctionByCategory($event)" multiple="false">
+    <ion-select-option *ngFor='let category of dataService.stages' [value]="category.name">{{category.name}}</ion-select-option>
+  </ion-select>
+</ion-item>
+
+<ion-item lines="none">
+  <ion-label position="floating">Type</ion-label>
+  <ion-select disabled value="pm" okText="Filter" cancelText="Cancel" (ionChange)="filterFunctionByType($event)">
+    <ion-select-option *ngFor='let type of dataService.activityType' [value]="type.code">{{type.name}}</ion-select-option>
+  </ion-select>
+</ion-item>
+
+<!-- <ion-item>
+  <ion-label position="floating">Credits</ion-label>
+      <ion-range min="0" max="200" color="secondary" value="creditsInputValue">
+        <ion-label slot="start">Min</ion-label>
+        <ion-label slot="end">Max</ion-label>
+      </ion-range>
+</ion-item> -->
+
+<!-- <ion-item>
+  <ion-label>Show completed</ion-label>
+  <ion-toggle slot="end"></ion-toggle>
+</ion-item> -->

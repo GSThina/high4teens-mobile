@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add New Badge</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<!-- <ion-label class="item"><b>Name</b></ion-label> -->
+<ion-item lines="none">
+  <ion-input type="text" placeholder="Name" required></ion-input>
+</ion-item>
+<!-- <ion-label class="item"><b>Code</b></ion-label> -->
+<ion-item lines="none">
+  <ion-input type="text" placeholder="Code" required></ion-input>
+</ion-item>
+<!-- <ion-label class="item"><b>Points</b></ion-label>  -->
+<ion-item lines="none">
+  <ion-input type="number" placeholder="Points" required></ion-input>
+</ion-item>
+<!-- <ion-label class="item"><b>Description</b></ion-label>  -->
+<ion-item lines="none">
+  <ion-input type="text" placeholder="Description" required></ion-input>
+</ion-item>
+<!-- <ion-label class="item"><b>Expiry</b></ion-label>  -->
+<ion-item lines="none">
+  <ion-input type="text" placeholder="Expiry" required></ion-input>
+</ion-item>
+<!-- <ion-label class="item"><b>Privilige</b></ion-label> -->
+<ion-item lines="none">
+  <ion-input type="text" placeholder="Privilige" required></ion-input>
+</ion-item>
+<!-- <ion-label class="item"><b>Order</b></ion-label>  -->
+<ion-item lines="none">
+  <ion-input type="text" placeholder="Order" required></ion-input>
+</ion-item>
+<!-- <ion-label class="item"><b>Type</b></ion-label>  -->
+<ion-item lines="none">
+  <ion-input type="text" placeholder="Type" required></ion-input>
+</ion-item>
+
+<ion-button expand="block" fill="solid" color="success" (click)="addNewBadge()">Add Badge</ion-button>
+<ion-button expand="block" fill="outline" color="danger" (click)="resetBadgeForm()">Reset</ion-button>

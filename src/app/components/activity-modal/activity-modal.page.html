@@ -1,0 +1,166 @@
+<ion-header class="ion-no-border" [translucent]="false">
+  <ion-toolbar>
+    <!-- <ion-title>{{activityService.commentList.length}}</ion-title> -->
+    <ion-buttons>
+      <ion-button (click)="dismiss()" size="small" color="danger">
+        <!-- <ion-icon name="arrow-back-outline"></ion-icon> -->
+        Close
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="primary">
+      <!-- <ion-button [color]="isMuted?'dark':'medium'" size="small" (click)="muteActivityToggle()">
+        {{isMuted?'Unmute':'Mute'}}
+      </ion-button> -->
+    <!-- <ion-fab style="margin: 1em 3.5em 0 0;" vertical="bottom" horizontal="end" slot="fixed"> -->
+        <!-- <ion-button (click)="showInfo()"> -->
+          <!-- <ion-icon color="primary" slot="icon-only" name="information-outline"></ion-icon> -->
+          <!-- Stats
+        </ion-button> -->
+    <!-- </ion-fab> -->
+    <!-- <ion-fab style="margin: 1em 0.5em 0 0;" vertical="bottom" horizontal="end" slot="fixed"> -->
+        <ion-button (click)="shareActivity()" size="small" color="success">
+          <!-- <ion-icon color="success" name="share-social-outline"></ion-icon> -->
+          Invite
+        </ion-button>
+    <!-- </ion-fab> -->
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<!-- <ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons color="dark">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-buttons  slot="primary">
+      <ion-button color="dark" (click)="socketio.subscribeToRoom(activity, userService.currentUserId)">
+        <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header> -->
+
+<!-- <ion-header class="ion-no-border" *ngIf="activityService.currentActivity.type!='cyc'">
+  <ion-img class='featured-img' [src]='data.media.thumbnail.url'></ion-img>
+</ion-header> -->
+<ion-content fullscreen='true' *ngIf="isActivityLoaded||activityService.commentList!=undefined" #content>
+  <!-- <ion-note align="center">
+    Swipe down to close
+  </ion-note> -->
+  <ion-img *ngIf="activityService.currentActivity.type=='cyc'" class='featured-img' [src]="activityService.currentActivity.media.low_resolution.url"></ion-img>
+
+  <ion-fab *ngIf="activityService.isNewComment" vertical="bottom" horizontal="center" slot="fixed">
+    <!-- <ion-fab-button (click)="scrollToTop(0)" size="small" color="light"> -->
+    <!-- <ion-badge color="light" style="margin: 2px;">
+      <ion-icon (click)="scrollToTop(0)" name="arrow-up-outline" color="medium"></ion-icon>
+    </ion-badge> -->
+    <!-- </ion-fab-button> -->
+    <!-- <ion-fab-button (click)="scrollToBottom(0)" size="small" color="light"> -->
+      <ion-badge color="light" style="margin: 2px;">
+        <ion-icon *ngIf="!activityService.isNewComment" (click)="scrollToBottom(0)" name="arrow-down-outline" color="medium"></ion-icon>
+        <ion-icon *ngIf="activityService.isNewComment" (click)="scrollToBottom(0)" name="arrow-down-outline" color="danger" style="font-size: 1.2em;"></ion-icon>
+      </ion-badge>
+    <!-- </ion-fab-button> -->
+  </ion-fab>
+  <ion-fab style="margin: 0 0 0 0;" vertical="top" horizontal="end" slot="fixed">
+    <ion-badge color="warning">{{activityService.commentList.length}} comments</ion-badge>
+  </ion-fab>
+  <!-- <ion-fab style="margin: 1em 0.5em 0 0;" vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button (click)="shareActivity()" size="small" color="light">
+        <ion-icon color="success" name="share-social-outline"></ion-icon>
+      </ion-fab-button>
+  </ion-fab>
+  <ion-fab style="margin: 1em 3.5em 0 0;" vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button (click)="showInfo()" size="small" color="light">
+        <ion-icon color="secondary" name="information-outline"></ion-icon>
+      </ion-fab-button>
+  </ion-fab> -->
+  <!-- <ion-fab style="margin: 1em 6.5em 0 0;" vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button size="small" color="light">
+        <ion-icon color="medium" name="caret-down-outline"></ion-icon>
+      </ion-fab-button>
+  </ion-fab>
+  <ion-fab style="margin: 1em 9.5em 0 0;" vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button size="small" color="light">
+        <ion-icon color="medium" name="caret-up-outline"></ion-icon>
+      </ion-fab-button>
+  </ion-fab> -->
+  <!-- <ion-fab style="margin: 1em 0 0 0;" vertical="top" horizontal="end" slot="fixed">
+      <ion-fab-button size="small" color="light">
+        <ion-icon color="tertiary" name="image-outline"></ion-icon>
+      </ion-fab-button>
+  </ion-fab> -->
+
+  <ion-card class="baseLineCard" *ngIf="activityService.currentActivity.type=='pm'">
+    <ion-card-content>
+      <b>{{baseLine}}</b>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="activityService.commentList==undefined">
+    <ion-card-header>
+      <ion-card-subtitle>
+        Wow!
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      You are going to begin the first comment!
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card [class]="(line.userid!=userService.currentUserId)?'otherLineCards':'myLineCard'" *ngFor="let line of activityService.commentList" (press)="dropDownOptions(line.userid,line.comment_id,line.activity_id,$event)">
+    <ion-row>
+      <ion-col size="10">
+        <ion-chip (click)="openProfilePage(line.user)" color="clear" *ngIf="activityService.currentActivity.type!='pm'">
+          <ion-avatar>
+            <!-- *ngIf="line.userid!=userService.currentUserId"> -->
+            <img [src]="line.user?(line.user.profile_picture?line.user.profile_picture:userService.dummyimage):userService.dummyimage">
+          </ion-avatar>
+          <ion-label><b>{{line.user?line.user.full_name:'Community User'}}</b></ion-label>
+          <!-- <ion-label>{{line.time | date:'mediumTime'}}</ion-label> -->
+          <!-- <ion-avatar *ngIf="line.userid==userService.currentUserId">
+            <img [src]="line.user.profile_picture?line.user.profile_picture:userService.dummyimage">
+          </ion-avatar> -->
+        </ion-chip>
+        <ion-card-content>
+          {{line.text}}
+        </ion-card-content>
+      </ion-col>
+      <ion-col>
+        <ion-buttons *ngIf="line.userid!=userService.currentUserId" color="clear" size="small">
+            <ion-button (click)="editVoteByCommentId(line)" color="light">
+              <ion-note>{{(line.votesCount>0)?line.votesCount:null}}</ion-note>
+              <ion-icon *ngIf="!line.userVoted" color="danger" name="heart-outline" size="small"></ion-icon>
+              <ion-icon *ngIf="line.userVoted" color="danger" name="heart" size="small"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+      </ion-col>
+      <!-- Voting for every comment is currently disabled -->
+      <!--
+      <ion-col size="3">
+        <ion-button [disabled]="line.userid==userService.currentUserId" shape="round" color="medium" size="small" fill="clear"><ion-icon slot="end" name="caret-up-circle-outline"></ion-icon></ion-button>
+        <ion-button shape="round" color="medium" size="small" fill="clear" align="center"><b>{{line.votes?(line.votes.up-line.votes.down):0}}</b></ion-button>
+        <ion-button [disabled]="line.userid==userService.currentUserId" shape="round" color="medium" size="small" fill="clear"><ion-icon slot="end" name="caret-down-circle-outline"></ion-icon></ion-button>
+      </ion-col>
+      -->
+    </ion-row>
+  </ion-card>
+
+</ion-content>
+
+<ion-footer class="ion-no-border">
+  <ion-item lines="none">
+    <ion-col size="9">
+      <ion-textarea class="inputField" rows='2' [value]='commentText' (ionInput)="updateCommentText($event)" type='text' align="left" [placeholder]="placeholderText" [disabled]="activityService.disableComment"></ion-textarea>
+    </ion-col>
+    <ion-col size="3">
+      <ion-button (click)='addNewComment()' [disabled]="activityService.wasRecentComment||activityService.timer>0||commentText.length<4||activityService.disableComment" size="large" fill="clear" class="brandRed">
+        <ion-icon *ngIf="activityService.timer<=0" slot="end" name="arrow-forward-circle-outline"></ion-icon>
+        <ion-label *ngIf="activityService.timer>0">{{activityService.timer}}</ion-label>
+      </ion-button>
+    </ion-col>
+  </ion-item>
+</ion-footer>

@@ -1,0 +1,42 @@
+ion-content{
+  --background: #dd2a27;
+  // --background: -webkit-linear-gradient(bottom,#333,#ff3333);
+}
+
+h1{
+  color: #ff3333;
+  padding: 0px 0px 0px 15px;
+  margin: 10px 0px 8px 0px;
+}
+
+.icons{
+  padding-right: 5px;
+  padding-left: 0px;
+}
+
+.brandRed{
+  color: #dd2a27;
+}
+
+ion-note{
+  font-size: 0.7em;
+  text-align: center;
+}
+
+
+.loginItems{
+  margin-bottom: 2px;
+  // border-bottom: 2px solid darkgrey;
+  margin-top: 0px;
+  transition: ease-in-out .2s;
+}
+
+.loginItems:active{
+  // border-bottom: 2px solid red;
+}
+
+.middle{
+  position: fixed;
+  bottom: 10%;
+  width: 90%;
+}

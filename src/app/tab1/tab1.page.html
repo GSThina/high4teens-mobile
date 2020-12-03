@@ -1,17 +1,188 @@
-<ion-header [translucent]="true">
+<ion-header class="ion-no-border" [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Tab 1
-    </ion-title>
+    <ion-title>High4Teens Hub</ion-title>
+
+    <ion-buttons slot="primary">
+      <!-- <ion-button (click)="openSearch()">
+        <img style='width: 1.5em;' src="../../assets/img/logo-icon.png">
+      </ion-button> -->
+      <!-- <ion-button disabled (click)="openSort($event)">
+        <ion-icon slot="icon-only" name="funnel-outline"></ion-icon>
+      </ion-button> -->
+      <ion-button (click)="openFilter($event)">
+        <ion-icon slot="icon-only" name="options-outline"></ion-icon>
+      </ion-button>
+      <!-- <ion-button disabled (click)="openNotifications($event)">
+        <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
+      </ion-button> -->
+      <ion-button (click)="dropDownOptions($event)">
+        <img style='width: 1.5em;' src="../../assets/img/logo-icon.png">
+      </ion-button>
+      <ion-button *ngIf="!networkService.isNetworkAvailable" (click)="util.presentAlert('You seem to have poor Internet', 'Connectivity Issue')">
+        <ion-icon color="danger" slot="icon-only" name="wifi-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
-
 <ion-content [fullscreen]="true">
+<!--
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
+      <ion-title size="large">High4Teens Hub</ion-title>
     </ion-toolbar>
   </ion-header>
+-->
+<ion-item lines="none" *ngIf="data.isNewUpdateAvailable">
+  New Update Available
+  <ion-button slot="end" (click)="util.updateApp($event)" color="primary" fill="clear" >
+    <ion-icon name="download-outline"></ion-icon>
+  </ion-button>
+</ion-item>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" *ngIf="networkService.isNetworkAvailable">
+    <ion-refresher-content
+        pullingIcon="refresh-outline"
+        pullingText="Pull to refresh"
+        refreshingSpinner="circles"
+        refreshingText="Refreshing...">
+      </ion-refresher-content>
+  </ion-refresher>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+  <ion-slide lines="none" *ngIf="activityService.activitiesList==null">
+    <div class="center">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="image-outline"></ion-icon>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-card-subtitle>There are no Activities at the moment!</ion-card-subtitle>
+    </ion-card-content>
+    </div>
+  </ion-slide>
+
+	<ion-grid>
+
+    <ion-row *ngIf="announcement?announcement.length>0:false">
+      <ion-col [size]="12">
+			<!-- <ion-col [size]="(activity.type=='il')?6:12" *ngFor="let activity of activityService.activitiesList"> -->
+				<ion-card (click)="openAnnouncement(announcement)">
+			    <ion-img ion-img-cache *ngIf="activity" [src]='announcement.media.thumbnail.url'></ion-img>
+			    <!-- <ion-card-header> -->
+			      <ion-card-subtitle style='padding: 0.5em;'>{{announcement.title}}</ion-card-subtitle>
+          <ion-card-content style='padding: 0.5em;'>
+				    {{announcement.description.substr(0, 180)}}...
+				  </ion-card-content>
+			  </ion-card>
+			</ion-col>
+		</ion-row>
+
+    <!-- <ion-slides pager="true" mode="ios" *ngIf="activityService.activitiesList?activityService.activitiesList.length>0:false">
+      <ion-slide *ngFor="let activity of activityService.activitiesList">
+        <ion-card class="activity-item"> -->
+  			<!-- <ion-col [size]="(activity.type=='il')?6:12" *ngFor="let activity of activityService.activitiesList"> -->
+        <!-- <ion-card-subtitle style='padding: 0.5em;'>From {{activity.start_date_time | date:'short'}} to {{activity.end_date_time | date:'short'}}</ion-card-subtitle> -->
+  				<!-- <ion-row (click)="openActivity(activity, activity.media.thumbnail.url)" align="(activity.type!='pm')?'center':'left'" >
+            <ion-img ion-img-cache *ngIf="activity" [src]='activity.media.thumbnail.url'></ion-img> -->
+          <!-- </ion-row> -->
+          <!-- <ion-row>
+              <ion-card-content style='padding: 0.5em;'>
+                <ion-note><b>{{activity.category}}</b></ion-note>
+                <br/>
+    				    {{activity.description.substr(0, 100)}}...
+    				  </ion-card-content>
+          </ion-row> -->
+          <!-- <ion-row>
+            <ion-toolbar>
+              <ion-note><b>{{activity.category}}</b></ion-note>
+              <ion-buttons slot="end">
+                <ion-button style="" fill="clear" color="dark" size="large">
+                  <ion-label style="padding: 0.5em;">{{activity.credits}}</ion-label>
+                  <ion-icon color="medium" name="ribbon-outline"></ion-icon>
+                </ion-button>
+                <ion-button style="" fill="clear" color="dark" size="large">
+                  <ion-label style="padding: 0.5em;">{{activity.participants.length}}</ion-label>
+                  <ion-icon color="medium" name="people-outline"></ion-icon>
+                </ion-button>
+                <ion-button style="" fill="clear" color="dark" size="large">
+                  <ion-label style="padding: 0.5em;">{{activity.comments?activity.comments.length:0}}</ion-label>
+                  <ion-icon color="medium" name="chatbubbles-outline"></ion-icon>
+                </ion-button>
+              </ion-buttons>
+            </ion-toolbar>
+          </ion-row>
+  			</ion-card>
+      </ion-slide>
+		</ion-slides> -->
+
+
+		<div *ngIf="activityService.activitiesList?activityService.activitiesList.length>0:false">
+      <ion-card mode="md" class="activity-item" *ngFor="let activity of activityService.activitiesList.slice().reverse()">
+			<!-- <ion-col [size]="(activity.type=='il')?6:12" *ngFor="let activity of activityService.activitiesList"> -->
+      <!-- <ion-card-subtitle style='padding: 0.5em;'>From {{activity.start_date_time | date:'short'}} to {{activity.end_date_time | date:'short'}}</ion-card-subtitle> -->
+				<ion-row (click)="openActivity(activity, activity.media.thumbnail.url)" align="(activity.type!='pm')?'center':'left'" >
+          <ion-col [size]="(activity.type!='dt')?4:12">
+            <ion-img ion-img-cache *ngIf="activity" [src]='activity.media.thumbnail.url'></ion-img>
+          <!-- <ion-card-header> -->
+          </ion-col>
+          <ion-col>
+            <ion-card-content style='padding: 0.5em;'>
+              <b>{{activity.category}}</b> | <i>{{(activity.type=='pm')?'Poem Marathon':(activity.type=='il')?'Inscribed Lines':(activity.type=='cyc')?'Creave your Creativity':'Unknown'}}</i>
+              <br/>
+  				    {{activity.description.substr(0, 100)}}...
+  				  </ion-card-content>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-toolbar>
+            <ion-buttons slot="end">
+              <ion-button style="" fill="clear" color="dark" size="large">
+                <ion-label style="padding: 1em;">{{activity.credits}}<ion-icon color="medium" style="margin: 15px 0 0 5px;" name="ribbon-outline"></ion-icon></ion-label>
+              </ion-button>
+              <ion-button style="" fill="clear" color="dark" size="large">
+                <ion-label style="padding: 1em;">{{activity.participants.length}}<ion-icon color="medium" style="margin: 15px 0 0 5px;" name="people-outline"></ion-icon></ion-label>
+              </ion-button>
+              <ion-button style="" fill="clear" color="dark" size="large">
+                <ion-label style="padding: 1em;">{{activity.comments?activity.comments.length:0}}<ion-icon color="medium" style="margin: 15px 0 0 5px;" name="chatbubbles-outline"></ion-icon></ion-label>
+              </ion-button>
+              <!-- <ion-button style="" fill="clear" color="dark" size="large" (click)="shareActivity()" slot="primary">
+                <ion-label style="padding: 1em;"><ion-icon color="medium" style="margin: 15px 0 0 5px;" name="share-outline"></ion-icon></ion-label>
+              </ion-button> -->
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-row>
+			</ion-card>
+		</div>
+</ion-grid>
+<ion-slide *ngIf="activityService.activitiesList?activityService.activitiesList.length<=0:true">
+  <div class="center">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="grid-outline"></ion-icon>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-card-subtitle>We could not find any activities
+        <br/>You may try to alter the filters if there are any</ion-card-subtitle>
+      </ion-card-content>
+    </div>
+  </ion-slide>
+
+<!-- fab placed to the bottom end -->
+  <!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)='openWriteComponent()' size="small" color="success">
+      <ion-icon name="pencil-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab> -->
+
+  <!-- </ion-grid> -->
+
+
+
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
 </ion-content>

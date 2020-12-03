@@ -1,17 +1,196 @@
-<ion-header [translucent]="true">
+<ion-header class="ion-no-border" [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Tab 3
-    </ion-title>
+    <ion-title>Your Feed</ion-title>
+
+    <ion-buttons slot="primary">
+      <!-- <ion-button (click)="openSearch()">
+        <img style='width: 1.5em;' src="../../assets/img/logo-icon.png">
+      </ion-button> -->
+      <!-- <ion-button disabled (click)="openFilter($event)">
+        <ion-icon slot="icon-only" name="options-outline"></ion-icon>
+      </ion-button>
+      <ion-button disabled (click)="openNotifications($event)">
+        <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
+      </ion-button> -->
+      <ion-button (click)="dropDownOptions($event)">
+        <img style='width: 1.5em;' src="../../assets/img/logo-icon.png">
+      </ion-button>
+      <ion-button *ngIf="!networkService.isNetworkAvailable" (click)="util.presentAlert('You seem to have poor Internet', 'Connectivity Issue')">
+        <ion-icon color="danger" slot="icon-only" name="wifi-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
 
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" *ngIf="networkService.isNetworkAvailable">
+    <ion-refresher-content
+        pullingIcon="refresh-outline"
+        pullingText="Pull to refresh"
+        refreshingSpinner="circles"
+        refreshingText="Refreshing...">
+      </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-item lines="none" *ngIf="data.isNewUpdateAvailable">
+    New Update Available
+    <ion-button slot="end" (click)="util.updateApp($event)" color="primary" fill="clear" >
+      <ion-icon name="download-outline"></ion-icon>
+    </ion-button>
+  </ion-item>
+
+    <ion-slide *ngIf="userService.userNotificationList.length==0">
+      <div class="center">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="notifications-outline"></ion-icon>
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-card-subtitle>Hey, We are just working on this for you!
+          <br/>We would let you know when we are done!</ion-card-subtitle>
+        </ion-card-content>
+      </div>
+    </ion-slide>
+
+    <ion-list class="notification" *ngFor="let notification of userService.userNotificationList">
+      <ion-item lines="none" (click)="openNotification(notification)">
+        <ion-avatar slot="start">
+          <ion-img [src]="notification.data.user.profile_picture"></ion-img>
+        </ion-avatar>
+        <!-- <ion-label *ngIf="notification.event=='rate-post'">You have recieved {{notification.data.value}} hearts</ion-label>
+        <ion-label *ngIf="notification.event=='new-comment'">{{notification.data.user.full_name}} says, "{{notification.data.text}}"</ion-label>
+        <ion-label *ngIf="notification.event=='new-post'">{{notification.data.user.full_name}} has just posted</ion-label>
+        <ion-label *ngIf="notification.event=='on-follow'">{{notification.data.user.full_name}} has followed you</ion-label> -->
+        <!-- <ion-note>time span</ion-note> -->
+        <ion-label text-wrap>{{notification.text}}</ion-label>
+        <ion-avatar *ngIf="notification.event!='on-follow'" class="thumbnail" slot="end">
+          <ion-img [src]="notification.thumbnail"></ion-img>
+        </ion-avatar>
+        <!-- <ion-button size="small" *ngIf="notification.event=='on-follow'">{{(notification.isFollowingUser.status==200)?'Following':'Follow'}}</ion-button> -->
+        <ion-button *ngIf="notification.event=='on-follow'" expand="block" fill="clear" size="small" class="follow-btn">View</ion-button>
+      </ion-item>
+    </ion-list>
+
+</ion-content>
+
+
+<!-- <ion-content [fullscreen]="true"> -->
+
+  <!-- AVICHAL - Need to create a new List below to display the list of Latest Notifications -->
+
+<!-- </ion-content> -->
+
+<ion-header [translucent]="true" *ngIf="false">
+  <ion-toolbar>
+    <ion-buttons slot="secondary">
+      <ion-button (click)="doRefresh(null)">
+        <img style='width: 1.5em;' src="../../assets/img/logo-icon.png">
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Stats</ion-title>
+    <ion-buttons slot="primary">
+      <!-- <ion-button (click)="openSearch()">
+        <img style='width: 1.5em;' src="../../assets/img/logo-icon.png">
+      </ion-button> -->
+      <ion-button disabled='true' (click)="openSearch()">
+        <ion-icon slot="icon-only" name="search-outline"></ion-icon>
+      </ion-button>
+      <ion-button disabled='true' (click)="openFilter($event)">
+        <ion-icon slot="icon-only" name="options-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-header class="ion-no-border" [translucent]="true" collapse="condense">
+    <ion-searchbar placeholder="Search" showCancelButton="focus" animated></ion-searchbar>
+  </ion-header>
+  <div>
+    <b>
+        <ion-row class="th">
+          <ion-col size='5' class="td">
+            <div>
+              Writers
+            </div>
+          </ion-col>
+          <ion-col size='3' class="td">
+            <div>
+              Earned Points
+            </div>
+          </ion-col>
+          <ion-col size='3' class="td">
+            <div>
+              Total Points
+            </div>
+          </ion-col>
+          <ion-col size='1' class="td">
+            <div>
+              Info
+            </div>
+          </ion-col>
+        </ion-row>
+      </b>
+  </div>
+</ion-header>
+
+<ion-content [fullscreen]="true" *ngIf="false">
+  <!-- <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title>Stats</ion-title>
+    </ion-toolbar>
+  </ion-header> -->
+
+  <ion-grid class="table">
+
+    <div *ngFor='let writer of data.users'>
+      <ion-row class="tr">
+        <ion-col size='5' class="td">
+          <div>
+            {{writer.full_name}}
+          </div>
+        </ion-col>
+        <ion-col size='3' class="td">
+          <div>
+            {{writer.counts.follows}}
+          </div>
+        </ion-col>
+        <ion-col size='3' class="td">
+          <div>
+            {{writer.counts.followed_by}}
+          </div>
+        </ion-col>
+        <ion-col size='1' class="td">
+          <div (click)='viewWriterInfo($event, writer)'>
+            <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+          </div>
+        </ion-col>
+      </ion-row>
+    </div>
+    <div *ngFor='let writer of data.users'>
+      <ion-row class="tr">
+        <ion-col size='5' class="td">
+          <div>
+            {{writer.full_name}}
+          </div>
+        </ion-col>
+        <ion-col size='3' class="td">
+          <div>
+            {{writer.counts.follows}}
+          </div>
+        </ion-col>
+        <ion-col size='3' class="td">
+          <div>
+            {{writer.counts.followed_by}}
+          </div>
+        </ion-col>
+        <ion-col size='1' class="td">
+          <div (click)='viewWriterInfo($event, writer)'>
+            <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+          </div>
+        </ion-col>
+      </ion-row>
+    </div>
+  </ion-grid>
+
+  <!-- <app-explore-container name="Join"></app-explore-container> -->
 </ion-content>

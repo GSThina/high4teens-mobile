@@ -1,0 +1,40 @@
+<!-- <ion-header class="ion-no-border" [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Badge</ion-title>
+  </ion-toolbar>
+</ion-header> -->
+
+<!-- <ion-content [fullscreen]="true"> -->
+
+    <!-- <ion-slide>
+      <div class="center">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="flash-off-outline"></ion-icon>
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-card-subtitle>Hey, looks like something is wrong with one of us!
+          <br/>Can we just speak and resolve it?</ion-card-subtitle>
+      </ion-card-content>
+      </div>
+    </ion-slide> -->
+
+    <div class="badge-div">
+      <ion-row>
+        <ion-card-title class="points-display center">+{{badge.points}}</ion-card-title>
+      </ion-row>
+      <ion-row>
+        <ion-card-title class="padding-top-1">{{badge.name}}</ion-card-title>
+      </ion-row>
+      <ion-row>
+        <ion-note class="padding-top-1">{{badge.description}}</ion-note>
+      </ion-row>
+      <!-- <ion-row>
+        <ion-avatar class='profile-pic'>
+          <img [src]="badge.icon?badge.icon:dataService.dummyimage">
+        </ion-avatar>
+      </ion-row> -->
+    </div>
+
+<!-- </ion-content> -->

@@ -1,0 +1,136 @@
+<ion-header class="ion-no-border" [translucent]="true">
+
+  <ion-toolbar>
+    <ion-title>Search</ion-title>
+
+    <ion-buttons slot="primary">
+
+      <ion-button (click)="util.dismissModal(this)">
+        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+      </ion-button>
+
+      <ion-button *ngIf="!networkService.isNetworkAvailable" (click)="util.presentAlert('You seem to have poor Internet', 'Connectivity Issue')">
+        <ion-icon color="danger" slot="icon-only" name="wifi-outline"></ion-icon>
+      </ion-button>
+
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
+
+<ion-content *ngIf="options.isSearch">
+  <!-- <ion-button (click)="dropDownOptions($event)" color="medium">All</ion-button> -->
+  <ion-item lines="none">
+    <ion-label>Search from</ion-label>
+    <ion-select mode="ios" [value]="searchType"  interface="popover" (ionChange)="setSearchType($event)" placeholder="Select">
+      <ion-select-option value="authors">Authors</ion-select-option>
+      <ion-select-option value="posts">Posts</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <!-- <ion-slide *ngIf="searchType=='all'">
+    Please Select what you want to search, to begin searching...
+  </ion-slide> -->
+  <ion-slide *ngIf="searchType=='all'">
+    <div class="center">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="search-outline"></ion-icon>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-card-subtitle>Please select one
+        <br/>Authors/Posts</ion-card-subtitle>
+    </ion-card-content>
+    </div>
+  </ion-slide>
+  <ion-searchbar mode="ios" *ngIf="searchType!='all'" [value]="searchQuery" inputmode="text" debounce="500" (ionChange)="setSearchQuery($event)" animated color="danger"></ion-searchbar>
+  <!-- <ion-searchbar *ngIf="searchType!='all'" [value]="searchQuery" cancelButtonText="Close" showCancelButton="always" inputmode="text" debounce="500" (ionCancel)="util.dismissModal(this)" (ionChange)="setSearchQuery($event)" animated color="danger"></ion-searchbar> -->
+  <!-- <ion-refresher slot="fixed" *ngIf="!isSearchComplete"> -->
+  <!-- <ion-refresher slot="fixed">
+    <ion-refresher-content
+        pullingIcon="refresh-outline"
+        pullingText="Pull to refresh"
+        refreshingSpinner="circles"
+        refreshingText="Refreshing...">
+      </ion-refresher-content>
+  </ion-refresher> -->
+  <ion-list *ngIf="searchType=='authors'">
+    <ion-item *ngFor="let item of options.listItems" lines="full" (click)="openProfilePage(item)">
+      <ion-avatar slot="start">
+        <img [src]="item.profile_pic?item.profile_pic:userService.dummyimage">
+      </ion-avatar>
+      <ion-label>{{item.full_name}}</ion-label>
+      <ion-note>{{item.username}}</ion-note>
+    </ion-item>
+  </ion-list>
+  <ion-list *ngIf="searchType=='posts'" class="container">
+    <!-- <ion-item *ngIf="searchType=='posts'" lines="full" (click)="openPostDetail(item)">
+      <ion-avatar slot="start">
+        <img [src]="item.media.thumbnail.url?item.media.thumbnail.url:userService.dummyimage">
+      </ion-avatar>
+      <ion-label>{{item.title}}</ion-label>
+      <ion-note><b>By</b> {{item.user.full_name}}</ion-note>
+    </ion-item> -->
+      <ion-row *ngFor="let item of options.listItems" class="meta" (click)='openPostDetail(item)' >
+        <ion-col>
+          <!-- <ion-card-header (click)='openPostDetail(post)' > -->
+          <!-- </ion-card-header> -->
+          <ion-chip color="clear">
+            <ion-avatar>
+              <img [src]="(item.user!=null)?item.user.profile_picture:dataService.dummyimage">
+            </ion-avatar>
+            <ion-note>{{item.user?item.user.full_name:'Community User'}}</ion-note>
+          </ion-chip>
+          <ion-card-content>
+
+            <ion-card-title><b>{{item.title}}</b></ion-card-title>
+            <ion-note>{{item.created_datetime | date:'medium':'+0530'}}</ion-note>
+          </ion-card-content>
+          <ion-row>
+            <ion-card-content>
+              <!-- {{item.subtitle}} -->
+              {{item.description.content.substr(0, 50)}}...
+            </ion-card-content>
+          </ion-row>
+        </ion-col>
+        <ion-col size="3">
+
+          <ion-img *ngIf="item.media.low_resolution.url" ion-img-cache [src]='item.media.thumbnail.url'></ion-img>
+
+          <ion-row class='right'>
+            <ion-note *ngIf="item.views?item.views.length>0:false">{{item.views.length}} <ion-icon color="medium" name="eye-outline"></ion-icon></ion-note>
+            <ion-note *ngIf="item.rating?item.rating.length>0:false">{{item.rating.length}} <ion-icon color="danger" name="heart"></ion-icon></ion-note>
+            <ion-note *ngIf="item.comment?item.comment.length>0:false">{{item.comment.length}} <ion-icon color="medium" name="chatbubbles"></ion-icon></ion-note>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+      <!-- <ion-row class="content">
+        <ion-col>
+          <ion-row>
+            <ion-card-content (click)='openPostDetail(post)' >
+              {{item.description.content.substr(0, 200)}}...
+            </ion-card-content>
+          </ion-row>
+        </ion-col>
+      </ion-row> -->
+  </ion-list>
+
+  <ion-slide *ngIf="(options.listItems?(options.listItems.length<=0):true)">
+    <div class="center">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="people-outline"></ion-icon>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content *ngIf="!isSearchDirty">
+      <ion-card-subtitle>Please enter {{searchType.substr(0, searchType.length-1)}}'s {{(searchType=='authors')?'name':'title'}}
+      </ion-card-subtitle>
+    </ion-card-content>
+    <ion-card-content *ngIf="isSearchDirty">
+      <ion-card-subtitle>Please try altering your search
+        <br/>No {{(searchType!='all')?searchType:'items'}} found</ion-card-subtitle>
+    </ion-card-content>
+    </div>
+  </ion-slide>
+</ion-content>
